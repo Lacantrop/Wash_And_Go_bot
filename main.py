@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
-
+from keyboards.main_keyboard import main_keyboard
 import os
 from dotenv import load_dotenv, find_dotenv
 
@@ -16,7 +16,8 @@ async def on_startup(_) -> None:
 @dp.message_handler(commands=['start'])
 async def cmd_start(message: types.Message) -> None:
     await bot.send_message(chat_id=message.from_user.id,
-                           text='Добро пожаловать в нашего бота!')
+                           text='Добро пожаловать в нашего бота!',
+                           reply_markup=main_keyboard)
 
 
 if __name__ == "__main__":
