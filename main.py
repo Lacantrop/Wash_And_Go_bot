@@ -1,32 +1,44 @@
+import asyncio
 import logging
-
-from aiogram import Bot, Dispatcher, executor, types
-from keyboards.main_keyboard import main_keyboard
 import os
+
+from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
+from handlers.start import register_cmd_start
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-
-# Initialize bot and dispatcher
-bot = Bot(os.getenv('TOKEN'), parse_mode="HTML")
-dp = Dispatcher(bot)
+logger = logging.getLogger(__name__)
 
 
-async def on_startup(_) -> None:
-    print('Бот был успешно запущен!')
+def register_all_handlers(dp) -> None:
+    register_cmd_start(dp)
 
 
-@dp.message_handler(commands=['start'])
-async def cmd_start(message: types.Message) -> None:
-    await bot.send_message(chat_id=message.from_user.id,
-                           text='Добро пожаловать в нашего бота!',
-                           reply_markup=main_keyboard)
+async def main():
+    # Configure logging
+    logging.basicConfig(level=logging.INFO)
+
+    # Information about start function
+    async def on_startup(_) -> None:
+        print('Бот был успешно запущен!')
+
+    load_dotenv(find_dotenv())
+
+    # Initialize bot and dispatcher
+    bot = Bot(os.getenv('TOKEN'), parse_mode="HTML")
+    dp = Dispatcher(bot)
+
+    register_all_handlers(dp)
+
+    # Start
+    try:
+        await dp.start_polling()
+    finally:
+        await bot.session.close()
 
 
 if __name__ == "__main__":
-    executor.start_polling(dp,
-                           skip_updates=True,
-                           on_startup=on_startup)
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.error("Bot stopped!")
