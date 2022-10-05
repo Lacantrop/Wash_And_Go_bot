@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Bot, Dispatcher, executor, types
 from keyboards.main_keyboard import main_keyboard
 import os
@@ -5,6 +7,10 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Initialize bot and dispatcher
 bot = Bot(os.getenv('TOKEN'), parse_mode="HTML")
 dp = Dispatcher(bot)
 
