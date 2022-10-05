@@ -6,12 +6,14 @@ from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv, find_dotenv
 
 from handlers.start import register_cmd_start
+from handlers.keyboard_handler import register_keyboard_handler
 
 logger = logging.getLogger(__name__)
 
 
 def register_all_handlers(dp) -> None:
     register_cmd_start(dp)
+    register_keyboard_handler(dp)
 
 
 async def main():
